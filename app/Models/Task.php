@@ -49,4 +49,9 @@ class Task extends Model
     {
         return $this->belongsTo(Sprint::class);
     }
+
+    public function formatId(): string
+    {
+        return "TASK-{$this->id}";
+    }
 }

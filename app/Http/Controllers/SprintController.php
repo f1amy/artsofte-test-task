@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateSprintRequest;
+use App\Http\Resources\SprintResource;
 use App\Models\Sprint;
 use Illuminate\Http\Request;
 
@@ -20,12 +22,19 @@ class SprintController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateSprintRequest $request
+     * @return SprintResource
      */
-    public function store(Request $request)
+    public function store(CreateSprintRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $sprint = Sprint::create([
+            'year' => $data['Year'],
+            'week' => $data['Week'],
+        ]);
+
+        return new SprintResource($sprint);
     }
 
     /**

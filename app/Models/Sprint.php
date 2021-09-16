@@ -47,4 +47,11 @@ class Sprint extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function formatId(): string
+    {
+        $year = substr($this->year, -2);
+
+        return "{$year}-{$this->week}";
+    }
 }

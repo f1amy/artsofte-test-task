@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateTaskRequest;
+use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -20,18 +22,25 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateTaskRequest $request
+     * @return TaskResource
      */
-    public function store(Request $request)
+    public function store(CreateTaskRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $task = Task::create([
+            'title' => $data['Title'],
+            'description' => $data['Description'],
+        ]);
+
+        return new TaskResource($task);
     }
 
     /**
      * Add estimation to a task.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function estimate(Request $request)
