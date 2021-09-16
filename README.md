@@ -1,4 +1,9 @@
-# artsofte-test-task
+# Artsofte test task
+
+# About
+This is an implementation of a test task.
+
+See [Task.docx](./Task.docx) (in Russian).
 
 ## How to run
     git clone https://github.com/f1amy/artsofte-test-task.git
