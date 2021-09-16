@@ -17,7 +17,7 @@ class CreateSprintsTable extends Migration
             $table->id();
             $table->smallInteger('year');
             $table->smallInteger('week');
-            $table->enum('status', ['created', 'in_work', 'closed'])->default('created');
+            $table->enum('status', ['created', 'started', 'closed'])->default('created');
             $table->timestamps();
 
             $table->unique(['year', 'week']);
