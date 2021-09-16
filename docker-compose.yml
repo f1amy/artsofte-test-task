@@ -1,5 +1,6 @@
 # For more information: https://laravel.com/docs/sail
-version: '3'
+version: '3.9'
+
 services:
     laravel.test:
         build:
@@ -13,6 +14,7 @@ services:
         ports:
             - '${APP_PORT:-80}:80'
         environment:
+            PHP_IDE_CONFIG: 'serverName=artsofte-test-task.test'
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
@@ -22,28 +24,32 @@ services:
         networks:
             - sail
         depends_on:
-            - mysql
-    mysql:
-        image: 'mysql:8.0'
+            - pgsql
+
+    pgsql:
+        image: 'postgres:13-alpine'
         ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
+            - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
         volumes:
-            - 'sailmysql:/var/lib/mysql'
+            - 'sail-pgsql:/var/lib/postgresql/data'
         networks:
             - sail
         healthcheck:
-          test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-          retries: 3
-          timeout: 5s
+            test: [ "CMD", "pg_isready", "-q" ]
+            retries: 3
+            timeout: 5s
+
 networks:
     sail:
+        name: artsofte-test-task-network
         driver: bridge
+
 volumes:
-    sailmysql:
+    sail-pgsql:
+        name: artsofte-test-task-database
         driver: local

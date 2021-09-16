@@ -10,3 +10,4 @@ See [Task.docx](./Task.docx) (in Russian).
     cd artsofte-test-task
     composer create-project
     ./vendor/bin/sail up -d
+    ./vendor/bin/sail artisan migrate
