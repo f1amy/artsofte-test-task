@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Service\TaskService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $api_task_id
  * @property-read \App\Models\Sprint|null $sprint
  * @method static \Database\Factories\TaskFactory factory(...$parameters)
  * @method static Builder|Task newModelQuery()
@@ -37,11 +39,6 @@ class Task extends Model
 {
     use HasFactory;
 
-    public const REGEX_ID = '/^TASK-\d+$/';
-    public const REGEX_ESTIMATION = '/^(((\d+\.)?\d+h)|(\d+m))$/';
-
-    public const UNIT_MINUTE = 'm';
-
     public const STATUS_OPEN = 'open';
     public const STATUS_CLOSED = 'closed';
 
@@ -55,6 +52,7 @@ class Task extends Model
         'title',
         'description',
         'estimation',
+        'status',
     ];
 
     /**
@@ -70,15 +68,17 @@ class Task extends Model
      *
      * @return float|null
      */
-    public function estimationInHours(): ?float
+    public function getEstimationInHours(): ?float
     {
         if ($this->estimation) {
             $unit = substr($this->estimation, -1);
             $number = (float) substr($this->estimation, 0, -1);
 
-            return $unit === self::UNIT_MINUTE
-                ? round($number / 60, 2)
-                : $number;
+            if ($unit === TaskService::UNIT_MINUTE) {
+                return round($number / 60, 2);
+            }
+
+            return $number;
         }
 
         return null;
@@ -89,7 +89,7 @@ class Task extends Model
      *
      * @return string
      */
-    public function formatTaskId(): string
+    public function getApiTaskIdAttribute(): string
     {
         return "TASK-{$this->id}";
     }

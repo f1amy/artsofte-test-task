@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class SprintService
 {
+    public const REGEX_ID = '/^\d{2}-\d+$/';
+
     /**
      * Parse Sprint ID.
      *
      * @param mixed $id
      * @return array|null
      */
-    public static function parseSprintId(mixed $id): ?array
+    private static function parseSprintId(mixed $id): ?array
     {
-        if (preg_match(Sprint::REGEX_ID, $id)) {
+        if (preg_match(self::REGEX_ID, $id)) {
             [$year, $week] = explode('-', $id);
 
             return compact('year', 'week');
@@ -33,10 +35,10 @@ class SprintService
      */
     public static function findBySprintId(string $id)
     {
-        $parsed = self::parseSprintId($id);
+        $attrs = self::parseSprintId($id);
 
-        return Sprint::whereWeek($parsed['week'])
-            ->where('year', 'like', '%'.$parsed['year'])
+        return Sprint::whereWeek($attrs['week'])
+            ->where('year', 'like', '%'.$attrs['year'])
             ->firstOrFail();
     }
 }

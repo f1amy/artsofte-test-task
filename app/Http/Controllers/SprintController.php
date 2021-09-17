@@ -10,6 +10,7 @@ use App\Http\Resources\SprintIdResource;
 use App\Http\Resources\SprintResource;
 use App\Models\Sprint;
 use App\Service\SprintService;
+use App\Service\SprintValidationService;
 use App\Service\TaskService;
 
 class SprintController extends Controller
@@ -89,7 +90,7 @@ class SprintController extends Controller
         $data = $request->validated();
         $sprint = SprintService::findBySprintId($data['sprintId']);
 
-        $message = $sprint->canStart();
+        $message = $this->canStartSprint($sprint);
         if ($message === true) {
             $sprint->setStatusStarted();
             $sprint->save();
@@ -113,7 +114,7 @@ class SprintController extends Controller
         $data = $request->validated();
         $sprint = SprintService::findBySprintId($data['sprintId']);
 
-        if ($sprint->canClose()) {
+        if ($this->canCloseSprint($sprint)) {
             $sprint->setStatusClosed();
             $sprint->save();
 
@@ -123,5 +124,30 @@ class SprintController extends Controller
         }
 
         return $this->respondApiError('Not all tasks were closed.');
+    }
+
+    /**
+     * Check if can start the sprint.
+     *
+     * @return bool|string
+     */
+    public function canStartSprint(Sprint $sprint)
+    {
+        $validator = new SprintValidationService();
+
+        $validator->setSprint($sprint);
+
+        return $validator->validate();
+    }
+
+    /**
+     * Check if can close the sprint.
+     *
+     * @param Sprint $sprint
+     * @return bool
+     */
+    public function canCloseSprint(Sprint $sprint): bool
+    {
+        return $sprint->tasks()->opened()->doesntExist();
     }
 }

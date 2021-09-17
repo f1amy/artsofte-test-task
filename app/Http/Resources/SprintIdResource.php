@@ -25,7 +25,7 @@ class SprintIdResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'Id' => $this->resource->formatSprintId(),
+            'Id' => $this->resource->api_sprint_id,
         ];
     }
 }

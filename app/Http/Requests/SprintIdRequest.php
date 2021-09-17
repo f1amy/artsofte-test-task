@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Sprint;
+use App\Service\SprintService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SprintIdRequest extends FormRequest
@@ -15,7 +15,7 @@ class SprintIdRequest extends FormRequest
     public function rules()
     {
         return [
-            'sprintId' => ['required', 'string', 'regex:' . Sprint::REGEX_ID],
+            'sprintId' => ['required', 'string', 'regex:' . SprintService::REGEX_ID],
         ];
     }
 }

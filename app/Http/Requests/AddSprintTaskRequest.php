@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Sprint;
-use App\Models\Task;
+use App\Service\SprintService;
+use App\Service\TaskService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AddSprintTaskRequest extends FormRequest
@@ -16,8 +16,8 @@ class AddSprintTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'sprintId' => ['required', 'string', 'regex:' . Sprint::REGEX_ID],
-            'taskId' => ['required', 'string', 'regex:' . Task::REGEX_ID],
+            'sprintId' => ['required', 'string', 'regex:' . SprintService::REGEX_ID],
+            'taskId' => ['required', 'string', 'regex:' . TaskService::REGEX_ID],
         ];
     }
 }

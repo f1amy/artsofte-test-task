@@ -15,8 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Task::factory()->count(10)->create();
         Sprint::factory()->count(5)->create();
+        Task::factory()
+            ->count(10)
+            ->state([
+                'sprint_id' => null,
+            ])
+            ->create();
 
         Task::factory()
             ->closed()

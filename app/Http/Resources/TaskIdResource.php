@@ -25,7 +25,7 @@ class TaskIdResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->formatTaskId(),
+            'id' => $this->resource->api_task_id,
         ];
     }
 }

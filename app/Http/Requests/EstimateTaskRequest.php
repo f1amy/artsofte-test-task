@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Task;
+use App\Service\TaskService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EstimateTaskRequest extends FormRequest
@@ -15,8 +15,8 @@ class EstimateTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'string', 'regex:' . Task::REGEX_ID],
-            'estimation' => ['required', 'string', 'regex:' . Task::REGEX_ESTIMATION],
+            'id' => ['required', 'string', 'regex:' . TaskService::REGEX_ID],
+            'estimation' => ['required', 'string', 'regex:' . TaskService::REGEX_ESTIMATION],
         ];
     }
 }

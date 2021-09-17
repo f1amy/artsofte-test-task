@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Task;
+use App\Service\TaskService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TaskIdRequest extends FormRequest
@@ -15,7 +15,7 @@ class TaskIdRequest extends FormRequest
     public function rules()
     {
         return [
-            'taskId' => ['required', 'string', 'regex:' . Task::REGEX_ID],
+            'taskId' => ['required', 'string', 'regex:' . TaskService::REGEX_ID],
         ];
     }
 }
