@@ -18,8 +18,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
  * @property-read int|null $tasks_count
- * @method static Builder|Sprint closed()
- * @method static Builder|Sprint created()
  * @method static \Database\Factories\SprintFactory factory(...$parameters)
  * @method static Builder|Sprint newModelQuery()
  * @method static Builder|Sprint newQuery()
@@ -77,12 +75,12 @@ class Sprint extends Model
         // less or equal to 40 hours of tasks estimations combined
         if ($this->hasOverMaxTasksEstimation()) {
             return 'Overall tasks estimation is over '
-                . static::MAX_TASKS_ESTIMATION . ' hours.';
+                . self::MAX_TASKS_ESTIMATION . ' hours.';
         }
 
         // less than 7 days before starting week
         if ($this->hasLessThanMaxDaysUntilStartWeek()) {
-            return "It's over " . static::MAX_DAYS_PRIOR_START
+            return "It's over " . self::MAX_DAYS_PRIOR_START
                 . 'days before sprint start week.';
         }
 
@@ -104,7 +102,7 @@ class Sprint extends Model
      */
     public function setStatusStarted(): void
     {
-        $this->status = static::STATUS_STARTED;
+        $this->status = self::STATUS_STARTED;
     }
 
     /**
@@ -112,7 +110,7 @@ class Sprint extends Model
      */
     public function setStatusClosed(): void
     {
-        $this->status = static::STATUS_CLOSED;
+        $this->status = self::STATUS_CLOSED;
     }
 
     /**
@@ -120,7 +118,7 @@ class Sprint extends Model
      *
      * @return string
      */
-    public function formatId(): string
+    public function formatSprintId(): string
     {
         $year = substr($this->year, -2);
 
@@ -128,45 +126,13 @@ class Sprint extends Model
     }
 
     /**
-     * Parse Sprint ID.
-     *
-     * @param mixed $id
-     * @return array|null
-     */
-    public static function parseId(mixed $id): ?array
-    {
-        if (preg_match(static::REGEX_ID, $id)) {
-            [$year, $week] = explode('-', $id);
-
-            return compact('year', 'week');
-        }
-
-        return null;
-    }
-
-    /**
-     * Find model by Sprint ID.
-     *
-     * @param string $id
-     * @return Sprint|Builder|Model
-     */
-    public static function findBySprintIdOrFail(string $id)
-    {
-        $parsed = static::parseId($id);
-
-        return static::where('year', 'like', '%'.$parsed['year'])
-            ->whereWeek($parsed['week'])
-            ->firstOrFail();
-    }
-
-    /**
      * Determine if the sprint has overall tasks estimation over limit.
      *
      * @return bool
      */
-    public function hasOverMaxTasksEstimation(): bool
+    private function hasOverMaxTasksEstimation(): bool
     {
-        return $this->calculateTasksEstimation() > static::MAX_TASKS_ESTIMATION;
+        return $this->calculateTasksEstimation() > self::MAX_TASKS_ESTIMATION;
     }
 
     /**
@@ -188,7 +154,7 @@ class Sprint extends Model
      *
      * @return bool
      */
-    public function hasLessThanMaxDaysUntilStartWeek(): bool
+    private function hasLessThanMaxDaysUntilStartWeek(): bool
     {
         $startWeek = Carbon::createFromFormat('Y', $this->year);
         $startWeek->startOfYear()
@@ -196,7 +162,7 @@ class Sprint extends Model
 
         $daysDiff = now()->diffInDays($startWeek, false);
 
-        return $daysDiff <= static::MAX_DAYS_PRIOR_START;
+        return $daysDiff <= self::MAX_DAYS_PRIOR_START;
     }
 
     /**
@@ -216,20 +182,9 @@ class Sprint extends Model
      */
     private function hasOtherActiveSprints(): bool
     {
-        return static::started()
+        return self::started()
             ->where('id', '!=', $this->getKey())
             ->exists();
-    }
-
-    /**
-     * Scope to only created sprints.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeCreated(Builder $query)
-    {
-        return $query->where('status', static::STATUS_CREATED);
     }
 
     /**
@@ -240,18 +195,7 @@ class Sprint extends Model
      */
     public function scopeStarted(Builder $query)
     {
-        return $query->where('status', static::STATUS_STARTED);
-    }
-
-    /**
-     * Scope to only closed sprints.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeClosed(Builder $query)
-    {
-        return $query->where('status', static::STATUS_CLOSED);
+        return $query->where('status', self::STATUS_STARTED);
     }
 
     public function tasks()

@@ -23,7 +23,7 @@ class TaskResource extends TaskIdResource
 
         return array_merge(parent::toArray($request), [
             'sprintId' => $this->when($task->sprint !== null,
-                fn () => $task->sprint->formatId()
+                fn () => $task->sprint->formatSprintId()
             ),
             'Title' => $task->title,
             'Description' => $task->description,

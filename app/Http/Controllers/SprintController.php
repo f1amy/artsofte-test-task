@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddSprintTaskRequest;
-use App\Http\Requests\SprintIdRequest;
 use App\Http\Requests\CreateSprintRequest;
-use App\Http\Resources\SprintIdResource;
+use App\Http\Requests\SprintIdRequest;
 use App\Http\Resources\SprintCollection;
+use App\Http\Resources\SprintIdResource;
 use App\Http\Resources\SprintResource;
 use App\Models\Sprint;
-use App\Models\Task;
+use App\Service\SprintService;
+use App\Service\TaskService;
 
 class SprintController extends Controller
 {
@@ -33,7 +34,7 @@ class SprintController extends Controller
     {
         $data = $request->validated();
 
-        $sprint = Sprint::findBySprintIdOrFail($data['sprintId']);
+        $sprint = SprintService::findBySprintId($data['sprintId']);
 
         return new SprintResource($sprint);
     }
@@ -68,8 +69,8 @@ class SprintController extends Controller
     {
         $data = $request->validated();
 
-        $sprint = Sprint::findBySprintIdOrFail($data['sprintId']);
-        $task = Task::findByTaskIdOrFail($data['taskId']);
+        $sprint = SprintService::findBySprintId($data['sprintId']);
+        $task = TaskService::findByTaskId($data['taskId']);
 
         $task->sprint()->associate($sprint);
         $task->save();
@@ -86,7 +87,7 @@ class SprintController extends Controller
     public function start(SprintIdRequest $request)
     {
         $data = $request->validated();
-        $sprint = Sprint::findBySprintIdOrFail($data['sprintId']);
+        $sprint = SprintService::findBySprintId($data['sprintId']);
 
         $message = $sprint->canStart();
         if ($message === true) {
@@ -110,7 +111,7 @@ class SprintController extends Controller
     public function close(SprintIdRequest $request)
     {
         $data = $request->validated();
-        $sprint = Sprint::findBySprintIdOrFail($data['sprintId']);
+        $sprint = SprintService::findBySprintId($data['sprintId']);
 
         if ($sprint->canClose()) {
             $sprint->setStatusClosed();

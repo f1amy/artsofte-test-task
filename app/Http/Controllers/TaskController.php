@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TaskIdRequest;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\EstimateTaskRequest;
-use App\Http\Resources\TaskIdResource;
+use App\Http\Requests\TaskIdRequest;
 use App\Http\Resources\TaskCollection;
+use App\Http\Resources\TaskIdResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
+use App\Service\TaskService;
 
 class TaskController extends Controller
 {
@@ -32,7 +33,7 @@ class TaskController extends Controller
     {
         $data = $request->validated();
 
-        $task = Task::findByTaskIdOrFail($data['taskId']);
+        $task = TaskService::findByTaskId($data['taskId']);
 
         return new TaskResource($task);
     }
@@ -67,7 +68,7 @@ class TaskController extends Controller
     {
         $data = $request->validated();
 
-        $task = Task::findByTaskIdOrFail($data['id']);
+        $task = TaskService::findByTaskId($data['id']);
 
         $task->update([
             'estimation' => $data['estimation'],
@@ -85,7 +86,7 @@ class TaskController extends Controller
     public function close(TaskIdRequest $request)
     {
         $data = $request->validated();
-        $task = Task::findByTaskIdOrFail($data['taskId']);
+        $task = TaskService::findByTaskId($data['taskId']);
 
         $task->setStatusClosed();
         $task->save();
