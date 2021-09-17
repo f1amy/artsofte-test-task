@@ -19,6 +19,7 @@ class CreateTasksTable extends Migration
             $table->string('title')->unique();
             $table->text('description')->nullable();
             $table->string('estimation')->nullable();
+            $table->enum('status', ['open', 'closed'])->default('open');
             $table->timestamps();
         });
     }

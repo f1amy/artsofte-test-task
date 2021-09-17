@@ -1,0 +1,113 @@
+POST http://localhost:80/api/sprints/close
+Content-Type: application/json
+Accept: application/json
+
+{
+    "sprintId": "23-12"
+}
+
+###
+POST http://localhost:80/api/sprints/start
+Content-Type: application/json
+Accept: application/json
+
+{
+    "sprintId": "23-12"
+}
+
+###
+POST http://localhost:80/api/sprints/add-task
+Content-Type: application/json
+Accept: application/json
+
+{
+    "sprintId": "23-12",
+    "taskId": "TASK-4"
+}
+
+###
+POST http://localhost:80/api/tasks/close
+Content-Type: application/json
+Accept: application/json
+
+{
+    "taskId": "TASK-4"
+}
+
+###
+POST http://localhost:80/api/estimate/task
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "TASK-3",
+    "estimation": "15m"
+}
+
+###
+POST http://localhost:80/api/estimate/task
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "TASK-3",
+    "estimation": "30m"
+}
+
+###
+POST http://localhost:80/api/estimate/task
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "TASK-3",
+    "estimation": "1.5h"
+}
+
+###
+POST http://localhost:80/api/estimate/task
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "TASK-3",
+    "estimation": "1h"
+}
+
+###
+POST http://localhost:80/api/sprints
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Year": 2025,
+    "Week": 31
+}
+
+###
+POST http://localhost:80/api/tasks
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Title": "Some Unique Title",
+    "Description": "Really long description"
+}
+
+###
+GET http://localhost:80/api/sprints/show?sprintId=23-12
+Accept: application/json
+
+###
+GET http://localhost:80/api/tasks/show?taskId=TASK-1
+Accept: application/json
+
+###
+GET http://localhost:80/api/sprints
+Accept: application/json
+
+###
+GET http://localhost:80/api/tasks
+Accept: application/json
+
+###

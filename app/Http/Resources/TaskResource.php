@@ -2,13 +2,15 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
-/**
- * @property \App\Models\Task $resource
- */
-class TaskResource extends JsonResource
+class TaskResource extends TaskIdResource
 {
+    /**
+     * The "data" wrapper that should be applied.
+     *
+     * @var string
+     */
+    public static $wrap = null;
+
     /**
      * Transform the resource into an array.
      *
@@ -17,8 +19,19 @@ class TaskResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->resource->formatId(),
-        ];
+        $task = $this->resource;
+
+        return array_merge(parent::toArray($request), [
+            'sprintId' => $this->when($task->sprint !== null,
+                fn () => $task->sprint->formatId()
+            ),
+            'Title' => $task->title,
+            'Description' => $task->description,
+            'Estimation' => $task->estimation,
+            'EstimationInHours' => $task->estimationInHours(),
+            'Status' => $task->status,
+            'CreatedAt' => $task->created_at,
+            'UpdatedAt' => $task->updated_at,
+        ]);
     }
 }

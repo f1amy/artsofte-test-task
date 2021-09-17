@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\WeekOfYear;
+use App\Models\Sprint;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateSprintRequest extends FormRequest
+class SprintIdRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,11 +14,8 @@ class CreateSprintRequest extends FormRequest
      */
     public function rules()
     {
-        $year = $this->input('Year');
-
         return [
-            'Year' => 'required|integer|digits:4|min:1970',
-            'Week' => ['required', 'integer', 'min:1', new WeekOfYear($year)],
+            'sprintId' => ['required', 'string', 'regex:' . Sprint::REGEX_ID],
         ];
     }
 }

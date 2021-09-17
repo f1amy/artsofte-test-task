@@ -2,13 +2,15 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
-/**
- * @property \App\Models\Sprint $resource
- */
-class SprintResource extends JsonResource
+class SprintResource extends SprintIdResource
 {
+    /**
+     * The "data" wrapper that should be applied.
+     *
+     * @var string
+     */
+    public static $wrap = null;
+
     /**
      * Transform the resource into an array.
      *
@@ -17,8 +19,16 @@ class SprintResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'Id' => $this->resource->formatId(),
-        ];
+        $sprint = $this->resource;
+
+        return array_merge(parent::toArray($request), [
+            'Year' => $sprint->year,
+            'Week' => $sprint->week,
+            'Status' => $sprint->status,
+            'TasksEstimation' => $sprint->calculateTasksEstimation() . 'h',
+            'Tasks' => new TaskCollection($sprint->tasks),
+            'CreatedAt' => $sprint->created_at,
+            'UpdatedAt' => $sprint->updated_at,
+        ]);
     }
 }
